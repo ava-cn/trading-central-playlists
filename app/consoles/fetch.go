@@ -1,9 +1,11 @@
 package consoles
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"github.com/ava-cn/trading-central-playlists/app/models"
+	"github.com/ava-cn/trading-central-playlists/app/supports"
 	"github.com/ava-cn/trading-central-playlists/databases"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -75,6 +77,7 @@ func FetchFormURL() {
 	for _, video = range videos.Video {
 		// 查询对应的视频是存在于数据库记录中，如果存在则记录，如果不存在则记录
 		if !models.IsVideoExists(databases.GetDB(), video.ID) {
+
 			CurrentVideoListFromXMLChan <- video
 		}
 
@@ -83,15 +86,29 @@ func FetchFormURL() {
 
 func StoreToDatabase() {
 	var (
-		video         models.Videos
+		video         *models.Videos
 		videoFromChan Video
+
+		VideoExtras     models.VideoExtras
+		videoExtrasJson []byte
 	)
 
 	for {
 		select {
 		case videoFromChan = <-CurrentVideoListFromXMLChan:
-			time.Sleep(5 * time.Second)
-			video = models.Videos{
+			// 获取最终的URL地址
+			VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(videoFromChan.URL)
+			VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(videoFromChan.ImageURL)
+			VideoExtras.RedirectVideoThumbnailURL, _ = supports.GetRedirectURL(videoFromChan.ThumbnailURL)
+
+			// 获取文件名
+			VideoExtras.RealVideoName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoURL)
+			VideoExtras.RealVideoImageName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoImageURL)
+			VideoExtras.RealVideoThumbnailName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoThumbnailURL)
+
+			videoExtrasJson, _ = json.Marshal(VideoExtras)
+
+			video = &models.Videos{
 				VideoID:                 videoFromChan.ID,
 				VideoTitle:              videoFromChan.Title,
 				VideoCreatedAt:          models.Time(videoFromChan.CreatedAt),
@@ -101,39 +118,51 @@ func StoreToDatabase() {
 				OriginVideoUrl:          videoFromChan.URL,
 				OriginVideoThumbnailUrl: videoFromChan.ThumbnailURL,
 				OriginVideoImageUrl:     videoFromChan.ImageURL,
-				VideoExtras:             nil,
+				VideoExtras:             videoExtrasJson,
+				Synced:                  false,
 			}
 
-			databases.GetDB().Create(&video)
+			databases.GetDB().Create(video)
 
 			// 将视频和图片资源上传到七牛云
-			go StoreToStorage(&video)
+			go StoreToStorage(video)
 		}
 	}
 }
 
 func StoreToStorage(video *models.Videos) {
 	var (
+		videoPathPrefix   = "trading-central/videos/" + strconv.Itoa(int(video.VideoID)) + "/"
+		imagePathPrefix   = "trading-central/images/" + strconv.Itoa(int(video.VideoID)) + "/"
 		videoKey          string
 		imageKey          string
 		thumbnailImageKey string
+		videoExtras       models.VideoExtras
 		err               error
 	)
-	// 存储视频
-	if videoKey, err = UploadToQiniu(video.OriginVideoUrl, strconv.Itoa(int(video.ID))+".mp4"); err != nil {
+
+	_ = json.Unmarshal(video.VideoExtras, &videoExtras)
+
+	// 获取文件名
+	if videoKey, err = UploadToQiniu(video.OriginVideoUrl, videoPathPrefix+videoExtras.RealVideoName); err != nil {
 		goto ERR
 	}
 	// 存储图片
-	if imageKey, err = UploadToQiniu(video.OriginVideoImageUrl, strconv.Itoa(int(video.ID))+".jpg"); err != nil {
+	if imageKey, err = UploadToQiniu(video.OriginVideoImageUrl, imagePathPrefix+videoExtras.RealVideoImageName); err != nil {
 		goto ERR
 	}
 
-	if thumbnailImageKey, err = UploadToQiniu(video.OriginVideoThumbnailUrl, strconv.Itoa(int(video.ID))+"-thumbnail.jpg"); err != nil {
+	if thumbnailImageKey, err = UploadToQiniu(video.OriginVideoThumbnailUrl, imagePathPrefix+videoExtras.RealVideoThumbnailName); err != nil {
 		goto ERR
 	}
 
-	fmt.Println(videoKey, imageKey, thumbnailImageKey)
+	// 存储到数据库
+	databases.DB.Model(video).Update(models.Videos{
+		VideoUrl:          videoKey,
+		VideoThumbnailUrl: imageKey,
+		VideoImageUrl:     thumbnailImageKey,
+		Synced:            true,
+	})
 
 ERR:
-	fmt.Println(err)
 }

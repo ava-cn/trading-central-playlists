@@ -24,9 +24,20 @@ type Videos struct {
 
 	VideoExtras JSON `json:"video_extras,omitempty" gorm:"column:video_extras;comment:'视频额外数据'" sql:"type:json"`
 
+	Synced    bool  `json:"synced" gorm:"type:boolean;default 0;comment:'图片和视频文件数据是否同步到七牛'"`
 	CreatedAt Time  `json:"created_at" gorm:"type:datetime;comment:'创建时间'"`
 	UpdatedAt Time  `json:"updated_at" gorm:"type:datetime;comment:'更新时间'"`
 	DeletedAt *Time `json:"deleted_at" gorm:"type:datetime;comment:'删除时间'" sql:"index"`
+}
+
+type VideoExtras struct {
+	RealVideoName          string `json:"real_video_name"`
+	RealVideoImageName     string `json:"real_video_image_name"`
+	RealVideoThumbnailName string `json:"real_video_thumbnail_name"`
+
+	RedirectVideoURL          string `json:"redirect_video_url"`
+	RedirectVideoImageURL     string `json:"redirect_video_image_url"`
+	RedirectVideoThumbnailURL string `json:"redirect_video_thumbnail_url"`
 }
 
 // 通过视频ID查找视频是否存在

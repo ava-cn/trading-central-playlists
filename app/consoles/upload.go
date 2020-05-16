@@ -32,21 +32,17 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 
 	url := bytes.Buffer{}
 	url.WriteString(remoteURL)
-	fmt.Println(url.String())
 	response, _ := http.Get(url.String())
 	defer response.Body.Close()
 	data, _ := ioutil.ReadAll(response.Body)
 
 	dataLen := int64(len(data))
-	err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(data), dataLen, &putExtra)
-	if err != nil {
+	if err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(data), dataLen, &putExtra); err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	key = putRet.Key
-
-	fmt.Println(key, putRet.Hash, putRet.PersistentID)
 
 	return
 }
