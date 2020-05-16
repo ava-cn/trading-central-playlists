@@ -2,6 +2,7 @@ package databases
 
 import (
 	"fmt"
+	"github.com/ava-cn/trading-central-playlists/app/models"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 	"net/url"
@@ -52,7 +53,7 @@ func InitDB() (db *gorm.DB) {
 	db = db.Set("gorm:table_options", "ENGINE=InnoDB CHARSET=utf8 auto_increment=1")
 
 	// 自动创建数据表
-	db.AutoMigrate(&models.Users{})
+	db.AutoMigrate(&models.Videos{})
 
 	DB = db
 	return

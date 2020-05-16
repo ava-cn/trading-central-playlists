@@ -5,6 +5,7 @@ import (
 	"github.com/ava-cn/trading-central-playlists/databases"
 	"github.com/ava-cn/trading-central-playlists/routers"
 	"github.com/gin-gonic/gin"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
 )
