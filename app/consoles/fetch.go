@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -43,7 +44,6 @@ func Run() {
 
 	// 存储数据到数据库
 	go StoreToDatabase()
-
 }
 
 // 发送请求获取资源存储到videoListChan中
@@ -90,6 +90,7 @@ func StoreToDatabase() {
 	for {
 		select {
 		case videoFromChan = <-CurrentVideoListFromXMLChan:
+			time.Sleep(5 * time.Second)
 			video = models.Videos{
 				VideoID:                 videoFromChan.ID,
 				VideoTitle:              videoFromChan.Title,
@@ -112,8 +113,27 @@ func StoreToDatabase() {
 }
 
 func StoreToStorage(video *models.Videos) {
+	var (
+		videoKey          string
+		imageKey          string
+		thumbnailImageKey string
+		err               error
+	)
 	// 存储视频
-
+	if videoKey, err = UploadToQiniu(video.OriginVideoUrl, strconv.Itoa(int(video.ID))+".mp4"); err != nil {
+		goto ERR
+	}
 	// 存储图片
+	if imageKey, err = UploadToQiniu(video.OriginVideoImageUrl, strconv.Itoa(int(video.ID))+".jpg"); err != nil {
+		goto ERR
+	}
 
+	if thumbnailImageKey, err = UploadToQiniu(video.OriginVideoThumbnailUrl, strconv.Itoa(int(video.ID))+"-thumbnail.jpg"); err != nil {
+		goto ERR
+	}
+
+	fmt.Println(videoKey, imageKey, thumbnailImageKey)
+
+ERR:
+	fmt.Println(err)
 }

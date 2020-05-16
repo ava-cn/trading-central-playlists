@@ -13,3 +13,11 @@ database:
 
 app:
   xml_url: https://video.tradingcentral.com/playlists/23125.xml
+
+qiniu:
+  bucket:
+  accessKey:
+  secretKey:
+  # 空间对应的机房
+  useHTTPS: true
+  useCdnDomains: true
