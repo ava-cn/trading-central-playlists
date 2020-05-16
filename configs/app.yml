@@ -10,3 +10,6 @@ database:
   password:
   charset: utf8
   local: Asia/Shanghai
+
+app:
+  xml_url: https://video.tradingcentral.com/playlists/23125.xml

@@ -51,3 +51,7 @@ func (t *Time) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("can not convert %v to timestamp", v)
 }
+
+func (t Time) ToLocalString() string {
+	return t.local().Format(timeFormat)
+}

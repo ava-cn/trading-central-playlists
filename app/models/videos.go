@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/jinzhu/gorm"
+)
+
 type Videos struct {
 	ID uint `json:"id" gorm:"primary_key;comment:'主键id'"`
 
@@ -23,4 +27,17 @@ type Videos struct {
 	CreatedAt Time  `json:"created_at" gorm:"type:datetime;comment:'创建时间'"`
 	UpdatedAt Time  `json:"updated_at" gorm:"type:datetime;comment:'更新时间'"`
 	DeletedAt *Time `json:"deleted_at" gorm:"type:datetime;comment:'删除时间'" sql:"index"`
+}
+
+// 通过视频ID查找视频是否存在
+func IsVideoExists(db *gorm.DB, VideoID uint64) bool {
+	var video Videos
+
+	db.Where("video_id = ?", VideoID).First(&video)
+
+	if video.VideoID != 0 {
+		return true
+	}
+
+	return false
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ava-cn/trading-central-playlists/app/consoles"
 	"github.com/ava-cn/trading-central-playlists/configs"
 	"github.com/ava-cn/trading-central-playlists/databases"
 	"github.com/ava-cn/trading-central-playlists/routers"
@@ -23,6 +24,8 @@ func main() {
 	// 初始化数据库连接
 	db = databases.InitDB()
 	defer db.Close()
+
+	go consoles.InitCorn()
 
 	r = gin.Default()
 
