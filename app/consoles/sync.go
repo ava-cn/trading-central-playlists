@@ -128,6 +128,8 @@ func StoreToDatabase() {
 
 			// 将视频和图片资源上传到七牛云
 			go StoreToStorage(video)
+		default:
+			time.Sleep(2 * time.Second) // 休眠2s
 		}
 	}
 }
