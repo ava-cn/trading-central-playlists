@@ -64,7 +64,7 @@ func InitQiniu() (formUploader *storage.FormUploader, upToken string, err error)
 		config        *storage.Config
 	)
 	bucket = viper.GetString("qiniu.bucket")
-	accessKey = viper.GetString("qiniu.bucket")
+	accessKey = viper.GetString("qiniu.accessKey")
 	secretKey = viper.GetString("qiniu.secretKey")
 	useHTTPS = viper.GetBool("qiniu.useHTTPS")
 	useCdnDomains = viper.GetBool("qiniu.useCdnDomains")
