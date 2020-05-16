@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+database:
+  driverName: mysql
+  host: 127.0.0.1
+  port: 3306
+  database: trading_central_playlists
+  user: root
+  password: root
+  charset: utf8
+  local: Asia/Shanghai
