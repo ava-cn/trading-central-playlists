@@ -40,7 +40,8 @@ type Video struct {
 // 定义一个通道存储视频数据
 var CurrentVideoListFromXMLChan = make(chan Video, 10)
 
-func Run() {
+// 文件同步
+func RunSync() {
 	// 获取数据并存入Chan
 	go FetchFormURL()
 
@@ -84,6 +85,7 @@ func FetchFormURL() {
 	}
 }
 
+// 存储到数据库
 func StoreToDatabase() {
 	var (
 		video         *models.Videos
@@ -130,6 +132,7 @@ func StoreToDatabase() {
 	}
 }
 
+// 保存到七牛云存储
 func StoreToStorage(video *models.Videos) {
 	var (
 		videoPathPrefix   = "trading-central/videos/" + strconv.Itoa(int(video.VideoID)) + "/"

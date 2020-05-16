@@ -25,8 +25,10 @@ func main() {
 	db = databases.InitDB()
 	defer db.Close()
 
+	// 执行定时任务
 	go consoles.InitCorn()
 
+	// 启动Gin框架
 	r = gin.Default()
 
 	// 载入路由

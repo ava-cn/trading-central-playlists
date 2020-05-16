@@ -11,14 +11,17 @@ import (
 	"net/http"
 )
 
-// 通过给定地址上传文件
+// 通过给定远程资源地址上传到七牛
 func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	var (
 		upToken      string
 		putRet       storage.PutRet
 		formUploader *storage.FormUploader
 		putExtra     storage.PutExtra
+		u            bytes.Buffer
+		readByte     []byte
 	)
+
 	if formUploader, upToken, err = InitQiniu(); err != nil {
 		return
 	}
@@ -30,14 +33,13 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 		},
 	}
 
-	url := bytes.Buffer{}
-	url.WriteString(remoteURL)
-	response, _ := http.Get(url.String())
+	u = bytes.Buffer{}
+	u.WriteString(remoteURL)
+	response, _ := http.Get(u.String())
 	defer response.Body.Close()
-	data, _ := ioutil.ReadAll(response.Body)
+	readByte, _ = ioutil.ReadAll(response.Body)
 
-	dataLen := int64(len(data))
-	if err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(data), dataLen, &putExtra); err != nil {
+	if err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(readByte), int64(len(readByte)), &putExtra); err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -47,6 +49,7 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	return
 }
 
+// 初始化七牛云存储
 func InitQiniu() (formUploader *storage.FormUploader, upToken string, err error) {
 	var (
 		bucket        string
