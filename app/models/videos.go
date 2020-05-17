@@ -52,3 +52,21 @@ func IsVideoExists(db *gorm.DB, VideoID uint64) bool {
 
 	return false
 }
+
+// 分页
+func ListVideo(db *gorm.DB, page, limit int) ([]*Videos, uint64, error) {
+	videos := make([]*Videos, 0)
+	var count uint64
+
+	if err := db.Where("synced = ?", true).
+		Offset((page - 1) * limit).
+		Limit(limit).
+		Order("video_id desc").
+		Find(&videos).
+		Count(&count).
+		Error; err != nil {
+		return videos, count, err
+	}
+
+	return videos, count, nil
+}

@@ -1,7 +1,11 @@
 package routers
 
 import (
+	"github.com/ava-cn/trading-central-playlists/app/http/resources"
+	"github.com/ava-cn/trading-central-playlists/app/models"
+	"github.com/ava-cn/trading-central-playlists/databases"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
 
@@ -10,6 +14,30 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 
 	r.GET("ping", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
+	})
+
+	r.GET("/playlists", func(ctx *gin.Context) {
+		var (
+			videos []*models.Videos
+			total  uint64
+			err    error
+		)
+		params := struct {
+			Page  int `form:"page,default=1"`
+			Limit int `form:"limit,default=10"`
+		}{}
+
+		if err = ctx.ShouldBind(&params); err != nil {
+			ctx.JSON(http.StatusUnprocessableEntity, gin.H{"message": "数据验证错误", "code": http.StatusUnprocessableEntity, "data": gin.H{}})
+			return
+		}
+
+		// 获取已经同步的数据
+		if videos, total, err = models.ListVideo(databases.GetDB(), params.Page, params.Limit); err != nil {
+			log.Println(err)
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{"data": resources.VideoCollection(videos), "current_page": params.Page, "total": total, "message": "success", "code": http.StatusOK})
 	})
 
 	return r
