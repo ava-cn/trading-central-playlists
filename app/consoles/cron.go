@@ -1,6 +1,10 @@
 package consoles
 
-import "github.com/robfig/cron"
+import (
+	"github.com/robfig/cron/v3"
+	"log"
+	"os"
+)
 
 func InitCorn() {
 	var (
@@ -8,8 +12,8 @@ func InitCorn() {
 		err error
 	)
 
-	c = cron.New()
-	if err = c.AddFunc("* * * * * *", RunSync); err != nil {
+	c = cron.New(cron.WithLogger(cron.VerbosePrintfLogger(log.New(os.Stdout, "cron: ", log.LstdFlags))))
+	if _, err = c.AddFunc("* * * * *", RunSync); err != nil {
 		panic(err)
 	}
 

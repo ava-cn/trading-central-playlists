@@ -3,7 +3,6 @@ package consoles
 import (
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"github.com/ava-cn/trading-central-playlists/app/models"
 	"github.com/ava-cn/trading-central-playlists/app/supports"
 	"github.com/ava-cn/trading-central-playlists/databases"
@@ -43,35 +42,16 @@ var CurrentVideoListFromXMLChan = make(chan Video, 10)
 // 文件同步
 func RunSync() {
 	// 获取数据并存入Chan
+	log.Println("FetchFormURL start running...")
 	go FetchFormURL()
 
 	// 存储数据到数据库
-	StoreToDatabase()
+	log.Println("StoreToDatabase start running...")
+	go StoreToDatabase()
 
 	// 检查数据库未同步的数据
+	log.Println("CheckSyncedStatus start running...")
 	go CheckSyncedStatus()
-}
-
-// 检查未同步的数据 synced = 0
-func CheckSyncedStatus() {
-	var (
-		video    *models.Videos
-		videos   []*models.Videos
-		unSynced int
-		err      error
-	)
-
-	if err = databases.GetDB().Where("synced = ?", false).Find(&videos).Count(&unSynced).Error; err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if unSynced >= 0 {
-		for _, video = range videos {
-			// 将视频和图片资源上传到七牛云
-			go StoreToStorage(video)
-		}
-	}
 }
 
 // 发送请求获取资源存储到videoListChan中
@@ -91,12 +71,12 @@ func FetchFormURL() {
 	defer response.Body.Close()
 
 	if data, err = ioutil.ReadAll(response.Body); err != nil {
-		fmt.Printf("open file failed, err: %s", err.Error())
+		log.Printf("open file failed, err: %s", err.Error())
 		return
 	}
 
 	if err = xml.Unmarshal(data, &videos); err != nil {
-		fmt.Printf("XML file unmasrshaler fialed, err: %s", err.Error())
+		log.Printf("XML file unmasrshaler fialed, err: %s", err.Error())
 		return
 	}
 
@@ -157,11 +137,36 @@ func StoreToDatabase() {
 				// 将视频和图片资源上传到七牛云
 				go StoreToStorage(video)
 			} else {
-				fmt.Printf("视频%d已经存在\n", video.VideoID)
+				log.Printf("视频%d已经存在\n", video.VideoID)
 			}
 
 		default:
 			time.Sleep(1 * time.Second) // 休眠1S
+		}
+	}
+}
+
+// 检查未同步的数据 synced = 0
+func CheckSyncedStatus() {
+	var (
+		video         models.Videos
+		videos        []models.Videos
+		unSyncedCount int
+		err           error
+	)
+
+	if err = databases.GetDB().Where("synced = ?", false).Find(&videos).Count(&unSyncedCount).Error; err != nil {
+		log.Println(err)
+		return
+	}
+
+	log.Println("CheckSyncedStatus func running...")
+	log.Printf("we have %d tasks should sync", unSyncedCount)
+
+	if unSyncedCount >= 0 {
+		for _, video = range videos {
+			// 将视频和图片资源上传到七牛云
+			go StoreToStorage(&video)
 		}
 	}
 }
