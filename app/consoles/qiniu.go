@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/qiniu/api.v7/v7/auth"
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // 通过给定远程资源地址上传到七牛
@@ -85,4 +87,36 @@ func InitQiniu() (formUploader *storage.FormUploader, upToken string, err error)
 	}
 	formUploader = storage.NewFormUploader(config)
 	return
+}
+
+// 通过给定key获取bucket中的资源
+func GetFile(key string) string {
+	var (
+		accessKey     string
+		secretKey     string
+		useHTTPS      bool
+		domain        string
+		privateBucket bool
+		mac           *auth.Credentials
+		deadline      int64
+	)
+
+	accessKey = viper.GetString("qiniu.accessKey")
+	secretKey = viper.GetString("qiniu.secretKey")
+	privateBucket = viper.GetBool("qiniu.privateBucket")
+	domain = viper.GetString("qiniu.domain")
+
+	if useHTTPS {
+		domain = fmt.Sprintf("%s://%s", "https", domain)
+	} else {
+		domain = fmt.Sprintf("%s://%s", "http", domain)
+	}
+
+	if privateBucket { // 私有空间访问
+		mac = auth.New(accessKey, secretKey)
+		deadline = time.Now().Add(time.Second * 3600).Unix() // 1小时有效期
+		return storage.MakePrivateURL(mac, domain, key, deadline)
+	} else { // 公开空间访问
+		return storage.MakePublicURL(domain, key)
+	}
 }

@@ -46,7 +46,32 @@ func RunSync() {
 	go FetchFormURL()
 
 	// 存储数据到数据库
-	go StoreToDatabase()
+	StoreToDatabase()
+
+	// 检查数据库未同步的数据
+	go CheckSyncedStatus()
+}
+
+// 检查未同步的数据 synced = 0
+func CheckSyncedStatus() {
+	var (
+		video    *models.Videos
+		videos   []*models.Videos
+		unSynced int
+		err      error
+	)
+
+	if err = databases.GetDB().Where("synced = ?", false).Find(&videos).Count(&unSynced).Error; err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if unSynced >= 0 {
+		for _, video = range videos {
+			// 将视频和图片资源上传到七牛云
+			go StoreToStorage(video)
+		}
+	}
 }
 
 // 发送请求获取资源存储到videoListChan中
@@ -81,7 +106,6 @@ func FetchFormURL() {
 
 			CurrentVideoListFromXMLChan <- video
 		}
-
 	}
 }
 
@@ -98,6 +122,9 @@ func StoreToDatabase() {
 	for {
 		select {
 		case videoFromChan = <-CurrentVideoListFromXMLChan:
+
+			time.Sleep(1 * time.Second) // 休眠1S
+
 			// 获取最终的URL地址
 			VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(videoFromChan.URL)
 			VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(videoFromChan.ImageURL)
@@ -124,12 +151,17 @@ func StoreToDatabase() {
 				Synced:                  false,
 			}
 
-			databases.GetDB().Create(video)
+			if !models.IsVideoExists(databases.GetDB(), video.VideoID) {
+				databases.GetDB().Create(video)
 
-			// 将视频和图片资源上传到七牛云
-			go StoreToStorage(video)
+				// 将视频和图片资源上传到七牛云
+				go StoreToStorage(video)
+			} else {
+				fmt.Printf("视频%d已经存在\n", video.VideoID)
+			}
+
 		default:
-			time.Sleep(2 * time.Second) // 休眠2s
+			time.Sleep(1 * time.Second) // 休眠1S
 		}
 	}
 }
