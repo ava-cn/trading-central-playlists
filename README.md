@@ -81,6 +81,21 @@ mysql -utrading_central_playlists -p trading_central_playlists < trading_central
 curl http://127.0.0.1:8087/ping
 ```
 
+## docker-compose
+
+### 拷贝并修改配置文件
+
+```
+cp app.yml app.production.yml
+```
+
+### 启动
+
+```
+docker-compose up -d
+```
+
+
 ## 接口
 
 - **GET** `/ping`
