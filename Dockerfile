@@ -9,7 +9,7 @@ RUN apk --no-cache add ca-certificates && \
   rm -rf /var/cache/apk/*
 
 # add tzdata options, Fixed "unknown time zone Asia/Shanghai" Error
-RUN apk add -U tzdata
+RUN apk add -U --no-cache tzdata
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 # Copy the Pre-built binary file from the previous stage
