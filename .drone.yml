@@ -1,9 +1,9 @@
 kind: pipeline
+type: exec
 name: deployment
 
 token:
 server:
-type: ssh
 
 steps:
   - name: restore-cache
