@@ -1,4 +1,6 @@
-version: "3"
+# yaml 配置
+# 官方文档：https://docs.docker.com/compose/compose-file/
+version: "3.7"
 
 networks:
     backend:
@@ -6,7 +8,7 @@ networks:
 
 services:
     app:
-        image: docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest
+        image: curder/trading-central-playlists:latest
         ports:
             - 8080:80
         volumes:
@@ -28,13 +30,12 @@ services:
             - "db:mysql"
         networks:
             - backend
-        tty: true
         healthcheck:
-          test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]   # 用于健康检查的指令
-          interval: 1m30s   # 间隔时间
-          timeout: 10s      # 超时时间
-          retries: 3        # 重试次数
-          start_period: 40s # 启动多久后开始检查
+            test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]   # 用于健康检查的指令
+            interval: 1m30s   # 间隔时间
+            timeout: 10s      # 超时时间
+            retries: 3        # 重试次数
+            start_period: 40s # 启动多久后开始检查
 
     db:
         image: mysql:5.7.22

@@ -9,4 +9,4 @@ make build_linux_amd64
 
 docker build -t curder/trading-central-playlists .
 
-sudo systemctl start docker-compose-trading-central-playlists
+# sudo systemctl start docker-compose-trading-central-playlists
