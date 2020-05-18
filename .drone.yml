@@ -23,17 +23,6 @@ steps:
       - go mod vendor -v
       - make build_linux_amd64
 
-  - name: docker
-    image: plugins/docker
-    settings:
-      registry: docker.pkg.github.com
-      repo: docker.pkg.github.com/ava-cn/trading-central-playlists/stage
-      auto_tag: true
-      auto_tag_suffix: linux-amd64
-      username: curder
-      password:
-        from_secret: github_docker_password
-
   - name: rsync
     image: drillster/drone-rsync
     environment:
