@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/ava-cn/trading-central-playlists/app/consoles"
 	"github.com/ava-cn/trading-central-playlists/configs"
 	"github.com/ava-cn/trading-central-playlists/databases"
@@ -11,15 +13,23 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	config configs.ConfYaml
+)
+
 func main() {
 	var (
 		r    *gin.Engine
 		db   *gorm.DB
 		port string
+		err  error
 	)
 
 	// 初始化配置文件
-	configs.InitConfigs()
+	if config, err = configs.InitConf(); err != nil {
+		log.Panicf("failed to init config,err: %s", err)
+		return
+	}
 
 	// 初始化数据库连接
 	db = databases.InitDB()

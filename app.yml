@@ -1,13 +1,13 @@
 server:
-  port: 8080
+  port: 8087
 
 database:
   driverName: mysql
-  host: 127.0.0.1
+  host: mysql
   port: 3306
   database: trading_central_playlists
-  user: root
-  password:
+  user: trading_central_playlists
+  password: trading_central_playlists
   charset: utf8
   local: Asia/Shanghai
 
@@ -15,9 +15,11 @@ app:
   xml_url: https://video.tradingcentral.com/playlists/23125.xml
 
 qiniu:
-  bucket:
-  accessKey:
-  secretKey:
-  # 空间对应的机房
+  bucket: 
+  privateBucket: false
+  accessKey: 
+  secretKey: 
+  domain: 
   useHTTPS: true
-  useCdnDomains: true
+  useCdnDomains: false
+
