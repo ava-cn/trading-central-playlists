@@ -22,26 +22,25 @@ steps:
       - go mod vendor -v
       - make build_linux_amd64
 
-  - name: build-stage
-    image: plugins/docker
+  - name: rsync
+    image: drillster/drone-rsync
+    environment:
+      RSYNC_KEY:
+        from_secret: rsync_key
+      RSYNC_USER: deployer
+      PLUGIN_TARGET: /var/www/codes/docker/sites/trading-central-playlists
     commands:
-      - sleep 10000
-      - docker build -t docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest release/linux/amd64/trading-central-playlists
-
-  - name: docker
-    image: plugins/docker
+      - echo "running sync"
     settings:
-      registry: docker.pkg.github.com
-      repo: ava-cn/trading-central-playlists/stage
-      auto_tag: true
-      auto_tag_suffix: linux-amd64
-      username: curder
-      password:
-        from_secret: github_docker_password
-    commands:
-      - docker push docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest
-      - echo "push image to GitHub success."
-
+      hosts:
+        - 172.16.11.15
+      source: ./*
+      include:
+        - "**.*"
+      exclude:
+        - "**.*"
+      script:
+        - cd ${PLUGIN_TARGET} && ls -la
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
