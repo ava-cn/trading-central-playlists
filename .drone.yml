@@ -27,7 +27,7 @@ steps:
     image: plugins/docker
     settings:
       registry: docker.pkg.github.com
-      repo: ava-cn/purge-css/stage
+      repo: docker.pkg.github.com/ava-cn/trading-central-playlists/stage
       auto_tag: true
       auto_tag_suffix: linux-amd64
       username: curder
