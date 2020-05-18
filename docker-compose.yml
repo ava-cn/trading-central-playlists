@@ -29,6 +29,12 @@ services:
         networks:
             - backend
         tty: true
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8080/ping"]   # 用于健康检查的指令
+          interval: 1m30s   # 间隔时间
+          timeout: 10s      # 超时时间
+          retries: 3        # 重试次数
+          start_period: 40s # 启动多久后开始检查
 
     db:
         image: mysql:5.7.22
