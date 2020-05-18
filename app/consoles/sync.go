@@ -162,7 +162,9 @@ func CheckSyncedStatus() {
 	}
 
 	log.Println("CheckSyncedStatus func running...")
-	log.Printf("we have %d tasks should sync", unSyncedCount)
+	if viper.GetBool("qiniu.enabled") {
+		log.Printf("we have %d tasks should store to qiniu storage", unSyncedCount)
+	}
 
 	if unSyncedCount >= 0 {
 		for _, video = range videos {
