@@ -1,0 +1,10 @@
+kind: pipeline
+type: docker
+name: node
+
+steps:
+  - name: build
+    image: golang:1.14
+    commands:
+      - docker build -t curder/trading-central-playlists .
+      - sleep 10000
