@@ -53,3 +53,7 @@ steps:
       branch:
         - stage
         - master
+volumes:
+  - name: cache
+    host:
+      path: /tmp/drone/cache
