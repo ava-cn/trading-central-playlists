@@ -18,13 +18,13 @@ steps:
   - name: build
     image: golang:1.14
     commands:
+      - go env -w GOPROXY=https://goproxy.cn,direct
       - go mod vendor
       - make build_linux_amd64
 
   - name: build-stage
     image: plugins/docker
     commands:
-      - sleep 10000
       - docker build -t docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest release/linux/amd64/trading-central-playlists
 
   - name: docker
