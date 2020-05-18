@@ -42,6 +42,7 @@ services:
             # 容器的配置目录挂载到host物理机目录/user/local/docker/mysql/conf
             # - /usr/local/docker/mysql/conf:/etc/mysql/conf.d
             - ~/.docker-compose/mysql/conf:/etc/mysql/conf.d
+            - ./build/docker/mysql/my.cnf:/etc/mysql/my.cnf
         restart: always
         environment:
             TZ: Asia/Shanghai
@@ -49,5 +50,10 @@ services:
             MYSQL_DATABASE: trading_central_playlists
             MYSQL_USER: trading_central_playlists
             MYSQL_PASSWORD: trading_central_playlists
+        stdin_open: true
+        tty: true
+        # 修复问题 mbind: Operation not permitted
+        security_opt:
+          - seccomp:unconfined
         networks:
             - backend
