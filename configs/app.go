@@ -29,13 +29,14 @@ app:
   xmlURL: https://video.tradingcentral.com/playlists/23125.xml
 
 qiniu:
-  bucket: 
-  privateBucket: 
-  accessKey: 
-  secretKey: 
-  domain: 
-  useHTTPS: 
-  useCdnDomains: 
+  enabled: false
+  bucket:
+  privateBucket:
+  accessKey:
+  secretKey:
+  domain:
+  useHTTPS:
+  useCdnDomains:
 `)
 
 // ConfYaml is config structure.
@@ -70,6 +71,7 @@ type SectionApp struct {
 
 // SectionQiniu config for qiniu storage
 type SectionQiNiu struct {
+	Enabled       bool   `yaml:"enabled"`
 	Bucket        string `yaml:"bucket"`
 	PrivateBucket bool   `yaml:"privateBucket"`
 	AccessKey     string `yaml:"accessKey"`
@@ -136,6 +138,7 @@ func LoadConf(confPath string) (ConfYaml, error) {
 	config.App.XmlURL = viper.GetString("app.xmlURL")
 
 	// Qiniu
+	config.Qiniu.Enabled = viper.GetBool("qiniu.enabled")
 	config.Qiniu.Bucket = viper.GetString("qiniu.bucket")
 	config.Qiniu.PrivateBucket = viper.GetBool("qiniu.privateBucket")
 	config.Qiniu.AccessKey = viper.GetString("qiniu.AccessKey")

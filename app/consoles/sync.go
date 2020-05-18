@@ -3,15 +3,16 @@ package consoles
 import (
 	"encoding/json"
 	"encoding/xml"
-	"github.com/ava-cn/trading-central-playlists/app/models"
-	"github.com/ava-cn/trading-central-playlists/app/supports"
-	"github.com/ava-cn/trading-central-playlists/databases"
-	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/ava-cn/trading-central-playlists/app/models"
+	"github.com/ava-cn/trading-central-playlists/app/supports"
+	"github.com/ava-cn/trading-central-playlists/databases"
+	"github.com/spf13/viper"
 )
 
 // Videos 视频数组
@@ -173,6 +174,11 @@ func CheckSyncedStatus() {
 
 // 保存到七牛云存储
 func StoreToStorage(video *models.Videos) {
+
+	if !viper.GetBool("qiniu.enabled") {
+		log.Fatalln("ignore to storage to qiniu....")
+	}
+
 	var (
 		videoPathPrefix   = "trading-central/videos/" + strconv.Itoa(int(video.VideoID)) + "/"
 		imagePathPrefix   = "trading-central/images/" + strconv.Itoa(int(video.VideoID)) + "/"
