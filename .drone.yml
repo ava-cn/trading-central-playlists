@@ -19,5 +19,7 @@ steps:
       username: curder
       password:
         from_secret: github_docker_password
+    commands:
+      - echo "push image to GitHub success."
 
 
