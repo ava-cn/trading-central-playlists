@@ -1,0 +1,19 @@
+[Unit]
+Description=Docker Compose Trading Central Playlists  Server Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/var/www/codes/docker/sites/trading-central-playlists
+User=deployer
+Group=docker
+ExecStart=/usr/local/bin/docker-compose up -d
+ExecStop=/usr/local/bin/docker-compose stop
+RemainAfterExit=yes
+TimeoutStartSec=0
+StartLimitInterval=60
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target

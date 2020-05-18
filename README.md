@@ -14,7 +14,7 @@ git clone git@github.com:ava-cn/trading-central-playlists.git
 
 - 编译
 ```
-go build -o trading-central-playlists *.go
+make build_linux_amd64
 ```
 
 - 运行
@@ -95,6 +95,24 @@ cp app.yml app.production.yml
 docker-compose up -d
 ```
 
+### CentOS services
+
+```
+sudo cp docker-compose-trading-central-playlists.service /usr/lib/systemd/system/.
+```
+
+- 查看状态
+`systemctl status docker-compose-trading-central-playlists`
+
+- 启动服务
+```
+systemctl start docker-compose-trading-central-playlists
+```
+
+- 暂停服务
+```
+systemctl stop docker-compose-trading-central-playlists
+``` 
 
 ## 接口
 

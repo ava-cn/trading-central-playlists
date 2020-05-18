@@ -5,8 +5,8 @@ export GOARCH="amd64"
 export GOOS="linux"
 export CGO_ENABLED=0
 
-go build -v -o dist/trading-central-playlists
+make build_linux_amd64
 
 docker build -t curder/trading-central-playlists .
 
-docker-compose up -d
+sudo systemctl start docker-compose-trading-central-playlists
