@@ -34,7 +34,7 @@ services:
         image: mysql:5.7.22
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci # 设置utf8字符集
         ports:
-            - 33062:3306
+            - 33070:3306
         volumes:
             # 容器的配置目录挂载到host物理机目录/user/local/docker/mysql/data
             # - /usr/local/docker/mysql/data:/var/lib/mysql
