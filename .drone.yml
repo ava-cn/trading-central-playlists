@@ -48,7 +48,7 @@ steps:
       include:
         - "**.*"
       exclude:
-        - "**.*"
+        - "app.production.yml"
       script:
         - cd ${PLUGIN_TARGET} && ls -la
 
