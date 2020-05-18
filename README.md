@@ -78,7 +78,7 @@ mysql -utrading_central_playlists -p trading_central_playlists < trading_central
 ### 测试服务
 
 ```
-curl http://127.0.0.1:8888
+curl http://127.0.0.1:8087/ping
 ```
 
 ## 接口
