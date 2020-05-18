@@ -1,12 +1,14 @@
 package routers
 
 import (
+	"log"
+	"net/http"
+
+	"github.com/ava-cn/trading-central-playlists/app/http/controllers"
 	"github.com/ava-cn/trading-central-playlists/app/http/resources"
 	"github.com/ava-cn/trading-central-playlists/app/models"
 	"github.com/ava-cn/trading-central-playlists/databases"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 )
 
 // 路由
@@ -15,6 +17,9 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 	r.GET("ping", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
+
+	// HealthCheck 健康检查路由
+	r.GET("/health", controllers.HealthCheck)
 
 	r.GET("/playlists", func(ctx *gin.Context) {
 		var (
