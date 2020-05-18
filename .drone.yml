@@ -12,7 +12,7 @@ steps:
     image: plugins/docker
     settings:
       registry: docker.pkg.github.com
-      repo: docker.pkg.github.com/ava-cn/trading-central-playlists/stage
+      repo: ava-cn/trading-central-playlists/stage
       auto_tag: true
       auto_tag_suffix: linux-amd64
       username: curder
