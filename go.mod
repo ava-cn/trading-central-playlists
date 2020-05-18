@@ -9,7 +9,7 @@ require (
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/mitchellh/mapstructure v1.3.0 // indirect
-	github.com/pelletier/go-toml v1.7.0 // indirect
+	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/qiniu/api.v7/v7 v7.5.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/afero v1.2.2 // indirect
@@ -19,5 +19,4 @@ require (
 	github.com/spf13/viper v1.7.0
 	golang.org/x/sys v0.0.0-20200515095857-1151b9dac4a9 // indirect
 	gopkg.in/ini.v1 v1.56.0 // indirect
-	gopkg.in/yaml.v2 v2.3.0 // indirect
 )

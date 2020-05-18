@@ -1,0 +1,53 @@
+version: "3"
+
+networks:
+    backend:
+        driver: bridge
+
+services:
+    app:
+        image: curder/trading-central-playlists:latest
+        ports:
+            - 8080:80
+        volumes:
+            - "./app.production.yml:/root/.trading-central-playlists/app.yml"
+        environment:
+            # 数据库配置
+            - "TRADING_CENTRAL_DATABASE_DRIVER_NAME=mysql"
+            - "TRADING_CENTRAL_DATABASE_HOST=mysql"
+            - "TRADING_CENTRAL_DATABASE_PORT=3306"
+            - "TRADING_CENTRAL_DATABASE_DATABASE=trading_central_playlists"
+            - "TRADING_CENTRAL_DATABASE_USER=trading_central_playlists"
+            - "TRADING_CENTRAL_DATABASE_PASSWORD=trading_central_playlists"
+            - "TRADING_CENTRAL_DATABASE_CHARSET=utf8"
+            - "TRADING_CENTRAL_DATABASE_LOCAL=Asia/Shanghai"
+        restart: unless-stopped
+        depends_on:
+            - db
+        links:
+            - "db:mysql"
+        networks:
+            - backend
+        tty: true
+
+    db:
+        image: mysql:5.7.29
+        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci # 设置utf8字符集
+        ports:
+            - 33062:3306
+        volumes:
+            # 容器的配置目录挂载到host物理机目录/user/local/docker/mysql/data
+            # - /usr/local/docker/mysql/data:/var/lib/mysql
+            - ~/.docker-compose/mysql/data:/var/lib/mysql
+            # 容器的配置目录挂载到host物理机目录/user/local/docker/mysql/conf
+            # - /usr/local/docker/mysql/conf:/etc/mysql/conf.d
+            - ~/.docker-compose/mysql/conf:/etc/mysql/conf.d
+        restart: always
+        environment:
+            TZ: Asia/Shanghai
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: trading_central_playlists
+            MYSQL_USER: trading_central_playlists
+            MYSQL_PASSWORD: trading_central_playlists
+        networks:
+            - backend
