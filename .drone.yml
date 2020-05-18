@@ -19,7 +19,7 @@ steps:
     image: golang:1.14
     commands:
       - go env -w GOPROXY=https://goproxy.cn,direct
-      - go mod vendor
+      - go mod vendor -v
       - make build_linux_amd64
 
   - name: build-stage
