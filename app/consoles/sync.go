@@ -176,7 +176,8 @@ func CheckSyncedStatus() {
 func StoreToStorage(video *models.Videos) {
 
 	if !viper.GetBool("qiniu.enabled") {
-		log.Fatalln("ignore to storage to qiniu....")
+		log.Println("ignore to storage to qiniu....")
+		return
 	}
 
 	var (
