@@ -34,6 +34,25 @@ steps:
       password:
         from_secret: github_docker_password
 
+  - name: rsync
+    image: drillster/drone-rsync
+    environment:
+      RSYNC_KEY:
+        from_secret: rsync_key
+      RSYNC_USER: deployer
+      PLUGIN_TARGET: /var/www/codes/docker/sites/trading-central-playlists
+    settings:
+      hosts:
+        - 172.16.11.15
+      source: ./
+      include:
+        - "**.*"
+      exclude:
+        - "**.*"
+      script:
+        - cd ${PLUGIN_TARGET} && ls -la
+
+
   - name: rebuild-cache
     image: drillster/drone-volume-cache
     volumes:
