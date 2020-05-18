@@ -3,16 +3,29 @@ type: docker
 name: node
 
 steps:
+  - name: restore-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      restore: true
+      mount:
+        - ./vendor
+    commands:
+      - echo "restore cache"
+
   - name: build
     image: golang:1.14
     commands:
+      - go mod vendor
       - make build_linux_amd64
 
   - name: build-stage
     image: plugins/docker
     commands:
       - sleep 10000
-      -  docker build -t docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest release/linux/amd64/trading-central-playlists
+      - docker build -t docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest release/linux/amd64/trading-central-playlists
 
   - name: docker
     image: plugins/docker
@@ -29,3 +42,18 @@ steps:
       - echo "push image to GitHub success."
 
 
+  - name: rebuild-cache
+    image: drillster/drone-volume-cache
+    volumes:
+      - name: cache
+        path: /cache
+    settings:
+      rebuild: true
+      mount:
+        - ./vendor
+    commands:
+      - echo "rebuild cache"
+    when:
+      branch:
+        - stage
+        - master
