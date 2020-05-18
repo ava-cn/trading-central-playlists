@@ -1,7 +1,6 @@
 name: deployment
 
 kind: pipeline
-type: docker
 
 
 steps:
@@ -34,8 +33,6 @@ steps:
       username: curder
       password:
         from_secret: github_docker_password
-    commands:
-      - echo "push image to GitHub success."
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -52,6 +49,7 @@ steps:
       branch:
         - stage
         - master
+
 volumes:
   - name: cache
     host:
