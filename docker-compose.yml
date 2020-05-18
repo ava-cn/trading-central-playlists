@@ -6,7 +6,7 @@ networks:
 
 services:
     app:
-        image: docker.pkg.github.com/ava-cn/trading-central-playlists/stage:linux-amd64
+        image: docker.pkg.github.com/ava-cn/trading-central-playlists/stage:latest
         ports:
             - 8080:80
         volumes:
