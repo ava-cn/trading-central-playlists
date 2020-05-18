@@ -48,7 +48,7 @@ func RunSync() {
 
 	// 存储数据到数据库
 	log.Println("StoreToDatabase start running...")
-	go StoreToDatabase()
+	StoreToDatabase()
 
 	// 检查数据库未同步的数据
 	log.Println("CheckSyncedStatus start running...")
