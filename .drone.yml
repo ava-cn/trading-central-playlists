@@ -6,8 +6,7 @@ steps:
   - name: build
     image: golang:1.14
     commands:
-      -
-      - sleep 10000
+      - make build_linux_amd64
 
   - name: docker
     image: plugins/docker
