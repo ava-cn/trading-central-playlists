@@ -41,6 +41,19 @@ steps:
       script:
         - cd ${PLUGIN_TARGET} && ls -la
 
+  - name: ssh-command
+    image: appleboy/drone-ssh
+    settings:
+    host: 172.16.11.15
+    username: deployer
+    port: 22
+    key:
+      from_secret: rsync_key
+    script:
+      - echo hello
+      - echo world
+      - ls -lh
+      - sleep 2000
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
