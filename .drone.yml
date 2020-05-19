@@ -52,7 +52,7 @@ steps:
         - echo "rebuild docker image"
         - sh -x run.sh
         - echo "rebuild docker image"
-        - docker-compose build
+        - docker-compose build app
         - echo "reload docker-compose containers"
         - docker-compose up -d
         - echo "check docker-compose status"
