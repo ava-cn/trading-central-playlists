@@ -18,9 +18,6 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 		ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
-	// HealthCheck 健康检查路由
-	r.GET("/health", controllers.HealthCheck)
-
 	r.GET("/playlists", func(ctx *gin.Context) {
 		var (
 			videos []*models.Videos
