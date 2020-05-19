@@ -13,10 +13,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	config configs.ConfYaml
-)
-
 func main() {
 	var (
 		r    *gin.Engine
@@ -26,7 +22,7 @@ func main() {
 	)
 
 	// 初始化配置文件
-	if config, err = configs.InitConf(); err != nil {
+	if _, err = configs.InitConf(); err != nil {
 		log.Panicf("failed to init config,err: %s", err)
 		return
 	}

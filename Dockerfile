@@ -15,8 +15,8 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 # Copy the Pre-built binary file from the previous stage
 ADD release/linux/amd64/trading-central-playlists /bin/
 
-# Expose port 8087 to the outside world
-EXPOSE 8087
+# Expose port 80 to the outside world
+EXPOSE 80
 
 # Command to run the executable
 CMD ["/bin/trading-central-playlists"]

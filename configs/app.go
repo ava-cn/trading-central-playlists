@@ -13,7 +13,7 @@ import (
 
 var defaultConfig = []byte(`
 server:
-  port: 8087
+  port: 80
 
 database:
   driverName: mysql
