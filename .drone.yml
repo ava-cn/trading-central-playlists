@@ -53,7 +53,10 @@ steps:
         - cd /var/www/codes/docker/sites/trading-central-playlists
         - echo "rebuild docker image"
         - sh -x run.sh
+        - echo "reload docker-compose containers"
         - sudo systemctl start docker-compose-trading-central-playlists
+        - echo "check docker-compose status"
+        - sudo systemctl status docker-compose-trading-central-playlists
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
@@ -64,8 +67,6 @@ steps:
       rebuild: true
       mount:
         - ./vendor
-    commands:
-      - echo "rebuild cache"
     when:
       branch:
         - stage
