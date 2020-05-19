@@ -13,8 +13,6 @@ steps:
       restore: true
       mount:
         - ./vendor
-    commands:
-      - echo "restore cache"
 
   - name: build
     image: golang:1.14
