@@ -48,25 +48,6 @@ steps:
         - echo "check docker-compose status"
         - docker-compose ps
 
-#  - name: rebuild-and-reload-docker
-#    image: appleboy/drone-ssh
-#    settings:
-#      host: 172.16.11.15
-#      username: deployer
-#      port: 22
-#      key:
-#        from_secret: rsync_key
-#      script:
-#        - cd /var/www/codes/docker/sites/trading-central-playlists
-#        - echo "rebuild docker image"
-#        - sh -x run.sh
-#        - echo "rebuild docker image"
-#        - docker-compose build app
-#        - echo "reload docker-compose containers"
-#        - docker-compose up -d
-#        - echo "check docker-compose status"
-#        - docker-compose ps
-
   - name: rebuild-cache
     image: drillster/drone-volume-cache
     volumes:
