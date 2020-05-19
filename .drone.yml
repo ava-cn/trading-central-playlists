@@ -40,8 +40,6 @@ steps:
         - cd /var/www/codes/docker/sites/trading-central-playlists
         - ls -lah
         - echo "rebuild docker image"
-        - sh -x run.sh
-        - echo "rebuild docker image"
         - docker-compose build app
         - echo "reload docker-compose containers"
         - docker-compose up -d
