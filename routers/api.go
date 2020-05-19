@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ava-cn/trading-central-playlists/app/http/controllers"
 	"github.com/ava-cn/trading-central-playlists/app/http/resources"
 	"github.com/ava-cn/trading-central-playlists/app/models"
 	"github.com/ava-cn/trading-central-playlists/databases"
