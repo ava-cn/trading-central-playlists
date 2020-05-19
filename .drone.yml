@@ -37,7 +37,7 @@ steps:
       exclude:
         - "app.*.yml"
       script:
-        - cd ${PLUGIN_TARGET} && ls -la
+        - cd /var/www/codes/docker/sites/trading-central-playlists && ls -lah
 
   - name: rebuild-and-reload-docker
     image: appleboy/drone-ssh
