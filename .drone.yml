@@ -41,7 +41,7 @@ steps:
       script:
         - cd ${PLUGIN_TARGET} && ls -la
 
-  - name: ssh-command
+  - name: rebuild-and-reload-docker
     image: appleboy/drone-ssh
     settings:
       host: 172.16.11.15
@@ -50,10 +50,10 @@ steps:
       key:
         from_secret: rsync_key
       script:
-        - echo hello
-        - echo world
-        - ls -lh
-        - sleep 2000
+        - cd /var/www/codes/docker/sites/trading-central-playlists
+        - echo "rebuild docker image"
+        - sh -x run.sh
+        - sudo systemctl start docker-compose-trading-central-playlists
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
