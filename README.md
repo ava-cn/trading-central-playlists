@@ -40,7 +40,7 @@ docker build -t curder/trading-central-playlists .
 docker pull mysql:5.7.29 # 拉取镜像
 
 docker run --name trading-central-playlists-mysql \
-    -p 33060:3306 \
+    -p 33068:3306 \
     -v ~/.docker/trading-central-playlists-mysql/data:/var/lib/mysql \
     -e MYSQL_ROOT_PASSWORD=root \
     -e MYSQL_DATABASE=trading_central_playlists \
@@ -57,7 +57,7 @@ cp app.yml app.production.yml # 拷贝并修改项目配置
 docker run --name trading-central-playlists \
     --link trading-central-playlists-mysql:mysql \
     -v app.yml:$HOME/.trading-central-playlists/app.yml \
-    -p 8888:80 \
+    -p 8088:80 \
     curder/trading-central-playlists \
     -d
 ```
@@ -78,7 +78,7 @@ mysql -utrading_central_playlists -p trading_central_playlists < trading_central
 ### 测试服务
 
 ```
-curl http://127.0.0.1:8087/ping
+curl http://127.0.0.1:8088/ping
 ```
 
 ## docker-compose

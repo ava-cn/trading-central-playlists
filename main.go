@@ -10,19 +10,19 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/viper"
 )
 
 func main() {
 	var (
-		r    *gin.Engine
-		db   *gorm.DB
-		port string
-		err  error
+		config configs.ConfYaml
+		r      *gin.Engine
+		db     *gorm.DB
+		port   string
+		err    error
 	)
 
 	// 初始化配置文件
-	if _, err = configs.InitConf(); err != nil {
+	if config, err = configs.InitConf(); err != nil {
 		log.Panicf("failed to init config,err: %s", err)
 		return
 	}
@@ -41,7 +41,7 @@ func main() {
 	r = routers.InitRouters(r)
 
 	// 自定义http服务端口
-	port = viper.GetString("server.port")
+	port = config.Server.Port
 	if port != "" {
 		panic(r.Run(":" + port))
 	}

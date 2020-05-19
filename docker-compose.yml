@@ -8,9 +8,9 @@ networks:
 
 services:
     app:
-        image: curder/trading-central-playlists:latest
+        build: .
         ports:
-            - 8080:80
+            - 8088:80
         volumes:
             - "./app.production.yml:/root/.trading-central-playlists/app.yml"
         environment:
@@ -23,7 +23,7 @@ services:
             - "TRADING_CENTRAL_DATABASE_PASSWORD=trading_central_playlists"
             - "TRADING_CENTRAL_DATABASE_CHARSET=utf8"
             - "TRADING_CENTRAL_DATABASE_LOCAL=Asia/Shanghai"
-        restart: unless-stopped
+#        restart: unless-stopped
         depends_on:
             - db
         links:
@@ -31,7 +31,7 @@ services:
         networks:
             - backend
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:8080/health"]   # 用于健康检查的指令
+            test: ["CMD", "curl", "-f", "http://localhost:8088/health"]   # 用于健康检查的指令
             interval: 1m30s   # 间隔时间
             timeout: 10s      # 超时时间
             retries: 3        # 重试次数
@@ -42,7 +42,7 @@ services:
         image: mysql:5.7.22
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci # 设置utf8字符集
         ports:
-            - 33070:3306
+            - 33068:3306
         volumes:
             # 容器的配置目录挂载到host物理机目录/user/local/docker/mysql/data
             # - /usr/local/docker/mysql/data:/var/lib/mysql
