@@ -14,6 +14,6 @@ export CGO_ENABLED=0
 # rebuild image
 # docker build -t curder/trading-central-playlists .
 
-docker-compose build .
+docker-compose build
 
 # sudo systemctl start docker-compose-trading-central-playlists
