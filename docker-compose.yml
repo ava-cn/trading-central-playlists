@@ -23,7 +23,7 @@ services:
             - "TRADING_CENTRAL_DATABASE_PASSWORD=trading_central_playlists"
             - "TRADING_CENTRAL_DATABASE_CHARSET=utf8"
             - "TRADING_CENTRAL_DATABASE_LOCAL=Asia/Shanghai"
-#        restart: unless-stopped
+        restart: unless-stopped
         depends_on:
             - db
         links:
