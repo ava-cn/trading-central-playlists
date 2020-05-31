@@ -48,7 +48,10 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	}
 
 	defer response.Body.Close()
-	readByte, _ = ioutil.ReadAll(response.Body)
+	if readByte, err = ioutil.ReadAll(response.Body); err != nil {
+		log.Println(err)
+		return
+	}
 
 	if err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(readByte), int64(len(readByte)), &putExtra); err != nil {
 		log.Println(err)

@@ -123,7 +123,7 @@ func StoreToDatabase(video Video) {
 		databases.GetDB().Create(videoModel)
 
 		// 将视频和图片资源上传到七牛云
-		go StoreToStorage(videoModel)
+		go StoreToStorage(*videoModel)
 	} else {
 		log.Printf("视频%d已经存在\n", videoModel.VideoID)
 	}
@@ -151,17 +151,19 @@ func CheckSyncedStatus() {
 	if unSyncedCount >= 0 {
 		for _, video = range videos {
 			// 将视频和图片资源上传到七牛云
-			go StoreToStorage(&video)
+			go StoreToStorage(video)
 		}
 	}
 }
 
 // 保存到七牛云存储
-func StoreToStorage(video *models.Videos) {
+func StoreToStorage(video models.Videos) {
 
 	if !viper.GetBool("qiniu.enabled") {
 		log.Println("ignore storage to qiniu....")
 		return
+	} else {
+		log.Printf("start storage to qiniu: %#v", video.OriginVideoUrl)
 	}
 
 	var (
@@ -198,5 +200,5 @@ func StoreToStorage(video *models.Videos) {
 	})
 
 ERR:
-	log.Println(err)
+	log.Println("uploadToQiniu: ", err)
 }
