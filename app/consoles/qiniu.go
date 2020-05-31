@@ -10,6 +10,7 @@ import (
 	"github.com/qiniu/api.v7/v7/storage"
 	"github.com/spf13/viper"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"time"
 )
@@ -42,7 +43,7 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	client = &http.Client{Transport: transCfg}
 
 	if response, err = client.Get(remoteURL); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 
@@ -50,7 +51,7 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	readByte, _ = ioutil.ReadAll(response.Body)
 
 	if err = formUploader.Put(context.Background(), &putRet, upToken, distName, bytes.NewReader(readByte), int64(len(readByte)), &putExtra); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 

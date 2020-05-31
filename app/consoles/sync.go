@@ -37,9 +37,6 @@ type Video struct {
 	Width        int       `xml:"width"`
 }
 
-// 定义一个通道存储视频数据
-var CurrentVideoListFromXMLChan = make(chan Video, 10)
-
 // 文件同步
 func RunSync() {
 	// 获取数据并存入Chan
@@ -49,10 +46,6 @@ func RunSync() {
 	// 检查数据库未同步的数据
 	log.Println("CheckSyncedStatus start running...")
 	go CheckSyncedStatus()
-
-	// 存储数据到数据库
-	log.Println("StoreToDatabase start running...")
-	StoreToDatabase()
 }
 
 // 发送请求获取资源存储到videoListChan中
@@ -84,65 +77,55 @@ func FetchFormURL() {
 	for _, video = range videos.Video {
 		// 查询对应的视频是存在于数据库记录中，如果存在则记录，如果不存在则记录
 		if !models.IsVideoExists(databases.GetDB(), video.ID) {
-
-			CurrentVideoListFromXMLChan <- video
+			// 存储数据到数据库
+			log.Println("StoreToDatabase start running...")
+			StoreToDatabase(video)
 		}
 	}
 }
 
 // 存储到数据库
-func StoreToDatabase() {
+func StoreToDatabase(video Video) {
 	var (
-		video         *models.Videos
-		videoFromChan Video
+		videoModel *models.Videos
 
 		VideoExtras     models.VideoExtras
 		videoExtrasJson []byte
 	)
 
-	for {
-		select {
-		case videoFromChan = <-CurrentVideoListFromXMLChan:
-			time.Sleep(time.Second * 1) // 休眠1S
+	// 获取最终的URL地址
+	VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(video.URL)
+	VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(video.ImageURL)
+	VideoExtras.RedirectVideoThumbnailURL, _ = supports.GetRedirectURL(video.ThumbnailURL)
 
-			// 获取最终的URL地址
-			VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(videoFromChan.URL)
-			VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(videoFromChan.ImageURL)
-			VideoExtras.RedirectVideoThumbnailURL, _ = supports.GetRedirectURL(videoFromChan.ThumbnailURL)
+	// 获取文件名
+	VideoExtras.RealVideoName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoURL)
+	VideoExtras.RealVideoImageName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoImageURL)
+	VideoExtras.RealVideoThumbnailName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoThumbnailURL)
 
-			// 获取文件名
-			VideoExtras.RealVideoName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoURL)
-			VideoExtras.RealVideoImageName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoImageURL)
-			VideoExtras.RealVideoThumbnailName, _ = supports.GetFileNameFromURL(VideoExtras.RedirectVideoThumbnailURL)
+	videoExtrasJson, _ = json.Marshal(VideoExtras)
 
-			videoExtrasJson, _ = json.Marshal(VideoExtras)
+	videoModel = &models.Videos{
+		VideoID:                 video.ID,
+		VideoTitle:              video.Title,
+		VideoCreatedAt:          models.Time(video.CreatedAt),
+		VideoDuration:           video.Duration,
+		VideoWidth:              video.Width,
+		VideoHeight:             video.Height,
+		OriginVideoUrl:          video.URL,
+		OriginVideoThumbnailUrl: video.ThumbnailURL,
+		OriginVideoImageUrl:     video.ImageURL,
+		VideoExtras:             videoExtrasJson,
+		Synced:                  false,
+	}
 
-			video = &models.Videos{
-				VideoID:                 videoFromChan.ID,
-				VideoTitle:              videoFromChan.Title,
-				VideoCreatedAt:          models.Time(videoFromChan.CreatedAt),
-				VideoDuration:           videoFromChan.Duration,
-				VideoWidth:              videoFromChan.Width,
-				VideoHeight:             videoFromChan.Height,
-				OriginVideoUrl:          videoFromChan.URL,
-				OriginVideoThumbnailUrl: videoFromChan.ThumbnailURL,
-				OriginVideoImageUrl:     videoFromChan.ImageURL,
-				VideoExtras:             videoExtrasJson,
-				Synced:                  false,
-			}
+	if !models.IsVideoExists(databases.GetDB(), videoModel.VideoID) {
+		databases.GetDB().Create(videoModel)
 
-			if !models.IsVideoExists(databases.GetDB(), video.VideoID) {
-				databases.GetDB().Create(video)
-
-				// 将视频和图片资源上传到七牛云
-				go StoreToStorage(video)
-			} else {
-				log.Printf("视频%d已经存在\n", video.VideoID)
-			}
-
-		default:
-			time.Sleep(1 * time.Second) // 休眠1S
-		}
+		// 将视频和图片资源上传到七牛云
+		go StoreToStorage(videoModel)
+	} else {
+		log.Printf("视频%d已经存在\n", videoModel.VideoID)
 	}
 }
 
