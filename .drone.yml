@@ -49,9 +49,9 @@ steps:
         - docker-compose up -d
         - echo "check docker-compose status"
         - docker-compose ps
-      when:
-        branch:
-          - stage
+    when:
+      branch:
+        - stage
 
   - name: deploy-code-prod
     image: drillster/drone-rsync
@@ -77,9 +77,9 @@ steps:
         - docker-compose up -d
         - echo "check docker-compose status"
         - docker-compose ps
-      when:
-        branch:
-          - master
+    when:
+      branch:
+        - master
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
