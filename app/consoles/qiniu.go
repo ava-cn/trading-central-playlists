@@ -3,6 +3,7 @@ package consoles
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"fmt"
 	"github.com/qiniu/api.v7/v7/auth"
 	"github.com/qiniu/api.v7/v7/auth/qbox"
@@ -20,8 +21,10 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 		putRet       storage.PutRet
 		formUploader *storage.FormUploader
 		putExtra     storage.PutExtra
-		u            bytes.Buffer
 		readByte     []byte
+		transCfg     *http.Transport
+		response     *http.Response
+		client       *http.Client
 	)
 
 	if formUploader, upToken, err = InitQiniu(); err != nil {
@@ -29,15 +32,20 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	}
 
 	putRet = storage.PutRet{}
-	putExtra = storage.PutExtra{
-		Params: map[string]string{
-			"x:name": "github logo",
-		},
+	putExtra = storage.PutExtra{}
+
+	// Create New http Transport
+	transCfg = &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // disable verify
+	}
+	// Create Http Client
+	client = &http.Client{Transport: transCfg}
+
+	if response, err = client.Get(remoteURL); err != nil {
+		fmt.Println(err)
+		return
 	}
 
-	u = bytes.Buffer{}
-	u.WriteString(remoteURL)
-	response, _ := http.Get(u.String())
 	defer response.Body.Close()
 	readByte, _ = ioutil.ReadAll(response.Body)
 

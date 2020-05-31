@@ -103,6 +103,8 @@ func StoreToDatabase() {
 	for {
 		select {
 		case videoFromChan = <-CurrentVideoListFromXMLChan:
+			time.Sleep(time.Second * 1) // 休眠1S
+
 			// 获取最终的URL地址
 			VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(videoFromChan.URL)
 			VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(videoFromChan.ImageURL)
@@ -180,8 +182,8 @@ func StoreToStorage(video *models.Videos) {
 	}
 
 	var (
-		videoPathPrefix   = "trading-central/videos/" + strconv.Itoa(int(video.VideoID)) + "/"
-		imagePathPrefix   = "trading-central/images/" + strconv.Itoa(int(video.VideoID)) + "/"
+		videoPathPrefix   = "videos/" + strconv.Itoa(int(video.VideoID)) + "/"
+		imagePathPrefix   = "images/" + strconv.Itoa(int(video.VideoID)) + "/"
 		videoKey          string
 		imageKey          string
 		thumbnailImageKey string
@@ -205,7 +207,7 @@ func StoreToStorage(video *models.Videos) {
 	}
 
 	// 存储到数据库
-	databases.DB.Model(video).Update(models.Videos{
+	databases.GetDB().Model(video).Update(models.Videos{
 		VideoUrl:          videoKey,
 		VideoThumbnailUrl: imageKey,
 		VideoImageUrl:     thumbnailImageKey,
@@ -213,4 +215,5 @@ func StoreToStorage(video *models.Videos) {
 	})
 
 ERR:
+	log.Println(err)
 }
