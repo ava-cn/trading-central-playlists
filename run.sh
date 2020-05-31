@@ -2,18 +2,18 @@
 set -e
 
 # Go Binary Path
-export GOROOT=/usr/local/go
+export GOROOT=/usr/local/Cellar/go/1.14/libexec
 export PATH=$PATH:$GOROOT/bin
 
 export GOARCH="amd64"
 export GOOS="linux"
 export CGO_ENABLED=0
 
-# make build_linux_amd64
+make build_linux_amd64
 
 # rebuild image
 # docker build -t curder/trading-central-playlists .
 
 docker-compose build
 
-# sudo systemctl start docker-compose-trading-central-playlists
+docker-compose up -d

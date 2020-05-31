@@ -46,13 +46,13 @@ func RunSync() {
 	log.Println("FetchFormURL start running...")
 	go FetchFormURL()
 
-	// 存储数据到数据库
-	log.Println("StoreToDatabase start running...")
-	StoreToDatabase()
-
 	// 检查数据库未同步的数据
 	log.Println("CheckSyncedStatus start running...")
 	go CheckSyncedStatus()
+
+	// 存储数据到数据库
+	log.Println("StoreToDatabase start running...")
+	StoreToDatabase()
 }
 
 // 发送请求获取资源存储到videoListChan中
@@ -103,9 +103,6 @@ func StoreToDatabase() {
 	for {
 		select {
 		case videoFromChan = <-CurrentVideoListFromXMLChan:
-
-			time.Sleep(1 * time.Second) // 休眠1S
-
 			// 获取最终的URL地址
 			VideoExtras.RedirectVideoURL, _ = supports.GetRedirectURL(videoFromChan.URL)
 			VideoExtras.RedirectVideoImageURL, _ = supports.GetRedirectURL(videoFromChan.ImageURL)
