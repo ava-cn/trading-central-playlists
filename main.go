@@ -35,6 +35,7 @@ func main() {
 	go consoles.InitCorn()
 
 	// 启动Gin框架
+	gin.SetMode(config.Server.RunMode)
 	r = gin.Default()
 
 	// 载入路由

@@ -14,6 +14,7 @@ import (
 var defaultConfig = []byte(`
 server:
   port: 80
+  runMode: debug  # 开发模式, debug, release, test
 
 database:
   driverName: mysql
@@ -50,6 +51,7 @@ type ConfYaml struct {
 // SectionServer config for HTTP
 type SectionServer struct {
 	Port string `yaml:"port"`
+	RunMode string `yaml:"runMode"`
 }
 
 // SectionDatabases config for database
@@ -123,6 +125,7 @@ func LoadConf(confPath string) (ConfYaml, error) {
 
 	// Server
 	config.Server.Port = viper.GetString("server.port")
+	config.Server.RunMode = viper.GetString("server.runMode")
 
 	// Database
 	config.Database.DriverName = viper.GetString("database.driverName")

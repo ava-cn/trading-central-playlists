@@ -1,3 +1,6 @@
+server:
+  runMode: release
+
 database:
   driverName: mysql
   host: mysql
