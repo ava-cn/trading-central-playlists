@@ -13,6 +13,10 @@ steps:
       restore: true
       mount:
         - ./vendor
+    when:
+      branch:
+        - master
+        - stage
 
   - name: build
     image: golang:1.14
@@ -21,7 +25,7 @@ steps:
       - go mod vendor -v
       - make build_linux_amd64
 
-  - name: deploy-code
+  - name: deploy-code-stage
     image: drillster/drone-rsync
     environment:
       RSYNC_KEY:
@@ -45,6 +49,37 @@ steps:
         - docker-compose up -d
         - echo "check docker-compose status"
         - docker-compose ps
+      when:
+        branch:
+          - stage
+
+  - name: deploy-code-prod
+    image: drillster/drone-rsync
+    environment:
+      RSYNC_KEY:
+        from_secret: rsync_key
+      RSYNC_USER: deployer
+      PLUGIN_TARGET: /var/www/codes/avgpro.cn/trading-central-playlists
+    settings:
+      hosts:
+        - 47.74.191.127
+      source: ./
+      include:
+        - "**.*"
+      exclude:
+        - "app.*.yml"
+      script:
+        - cd /var/www/codes/avgpro.cn/trading-central-playlists
+        - ls -lah
+        - echo "rebuild docker image"
+        - docker-compose build app
+        - echo "reload docker-compose containers"
+        - docker-compose up -d
+        - echo "check docker-compose status"
+        - docker-compose ps
+      when:
+        branch:
+          - master
 
   - name: rebuild-cache
     image: drillster/drone-volume-cache
