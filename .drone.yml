@@ -62,14 +62,14 @@ steps:
       PLUGIN_TARGET: /var/www/codes/avgpro.cn/trading-central-playlists
     settings:
       hosts:
-        - 47.74.191.127
+        - 161.117.202.228
       source: ./
       include:
         - "**.*"
       exclude:
         - "app.*.yml"
       script:
-        - cd /var/www/codes/avgpro.cn/trading-central-playlists
+        - cd /var/www/codes/avbpro.cn/trading-central-playlists
         - ls -lah
         - echo "rebuild docker image"
         - docker-compose build app
