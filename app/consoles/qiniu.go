@@ -117,6 +117,7 @@ func GetFile(key string) string {
 	secretKey = viper.GetString("qiniu.secretKey")
 	privateBucket = viper.GetBool("qiniu.privateBucket")
 	domain = viper.GetString("qiniu.domain")
+	useHTTPS = viper.GetBool("qiniu.useHTTPS")
 
 	if useHTTPS {
 		domain = fmt.Sprintf("%s://%s", "https", domain)
