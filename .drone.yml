@@ -59,7 +59,7 @@ steps:
       RSYNC_KEY:
         from_secret: rsync_key
       RSYNC_USER: deployer
-      PLUGIN_TARGET: /var/www/codes/avgpro.cn/trading-central-playlists
+      PLUGIN_TARGET: /var/www/codes/avbpro.cn/trading-central-playlists
     settings:
       hosts:
         - 161.117.202.228
