@@ -119,5 +119,9 @@ systemctl stop docker-compose-trading-central-playlists
 - **GET** `/ping`
     返回值 `{"message": "PONG"}`
 
-- **GET** `/playlists`
-    返回值 `{"code": 200, "data": [], "message": "数据获取成功"}`
+- **GET** `/playlists/latest`
+    返回值 `{"data": {}, "message": "success", "code": 200}`
+
+- **GET** `/playlists` 
+    参数： limit<每页条数> | page <分页> 
+    返回值 `{"code": 200, "data": [], "message": "success", "current_page": 1, total: 10}`

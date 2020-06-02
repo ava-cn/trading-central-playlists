@@ -25,21 +25,26 @@ func VideoCollection(videos []*models.Videos) (videoResources []VideosResource) 
 	var video *models.Videos
 
 	for _, video = range videos {
-		videoResources = append(videoResources, VideosResource{
-			VideoID:           video.VideoID,
-			VideoTitle:        video.VideoTitle,
-			VideoCreatedAt:    video.VideoCreatedAt,
-			VideoDuration:     video.VideoDuration,
-			VideoWidth:        video.VideoWidth,
-			VideoHeight:       video.VideoHeight,
-			VideoUrl:          consoles.GetFile(video.VideoUrl),
-			VideoThumbnailUrl: consoles.GetFile(video.VideoThumbnailUrl),
-			VideoImageUrl:     consoles.GetFile(video.VideoImageUrl),
-			CreatedAt:         video.CreatedAt,
-			UpdatedAt:         video.UpdatedAt,
-		})
+		videoResources = append(videoResources, *VideoShow(video))
 	}
 
 	return
 
+}
+
+// 视频详情
+func VideoShow(video *models.Videos) *VideosResource {
+	return &VideosResource{
+		VideoID:           video.VideoID,
+		VideoTitle:        video.VideoTitle,
+		VideoCreatedAt:    video.VideoCreatedAt,
+		VideoDuration:     video.VideoDuration,
+		VideoWidth:        video.VideoWidth,
+		VideoHeight:       video.VideoHeight,
+		VideoUrl:          consoles.GetFile(video.VideoUrl),
+		VideoThumbnailUrl: consoles.GetFile(video.VideoThumbnailUrl),
+		VideoImageUrl:     consoles.GetFile(video.VideoImageUrl),
+		CreatedAt:         video.CreatedAt,
+		UpdatedAt:         video.UpdatedAt,
+	}
 }

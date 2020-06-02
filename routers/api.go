@@ -17,6 +17,16 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 		ctx.JSON(http.StatusOK, gin.H{"message": "pong"})
 	})
 
+	r.GET("/playlists/latest", func(ctx *gin.Context) {
+		var (
+			video models.Videos
+		)
+		// 获取最新的一条数据
+		databases.GetDB().Where("synced = ?", true).First(&video)
+
+		ctx.JSON(http.StatusOK, gin.H{"data": resources.VideoShow(&video), "message": "success", "code": http.StatusOK})
+	})
+
 	r.GET("/playlists", func(ctx *gin.Context) {
 		var (
 			videos []*models.Videos
