@@ -22,7 +22,10 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 			video models.Videos
 		)
 		// 获取最新的一条数据
-		databases.GetDB().Where("synced = ?", true).First(&video)
+		databases.GetDB().
+			Order("video_id desc").
+			Where("synced = ?", true).
+			First(&video)
 
 		ctx.JSON(http.StatusOK, gin.H{"data": resources.VideoShow(&video), "message": "success", "code": http.StatusOK})
 	})
