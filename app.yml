@@ -1,26 +1,24 @@
-server:
-  runMode: release
-
+---
+app:
+  xml_url: "https://video.tradingcentral.com/playlists/23125.xml"
 database:
+  charset: utf8
+  database: trading_central_playlists
   driverName: mysql
   host: mysql
-  port: 3306
-  database: trading_central_playlists
-  user: trading_central_playlists
-  password: trading_central_playlists
-  charset: utf8
   local: Asia/Shanghai
-
-app:
-  xml_url: https://video.tradingcentral.com/playlists/23125.xml
-
+  password: trading_central_playlists
+  port: 3306
+  user: trading_central_playlists
 qiniu:
+  accessKey: ~
+  bucket: ~
+  domain: ~
   enabled: false
-  bucket:
   privateBucket: false
-  accessKey:
-  secretKey:
-  domain:
-  useHTTPS: true
+  secretKey: ~
   useCdnDomains: false
-
+  useHTTPS: true
+server:
+  corsWebsites: "*"
+  runMode: release

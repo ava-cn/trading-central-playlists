@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"github.com/ava-cn/trading-central-playlists/middlewares"
 	"log"
 	"net/http"
 
@@ -12,6 +13,8 @@ import (
 
 // 路由
 func InitRouters(r *gin.Engine) *gin.Engine {
+
+	r.Use(middlewares.CorsMiddleware()) // 使用跨域中间件
 
 	r.GET("ping", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "pong"})

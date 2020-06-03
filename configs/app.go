@@ -15,6 +15,7 @@ var defaultConfig = []byte(`
 server:
   port: 80
   runMode: debug  # 开发模式, debug, release, test
+  corsWebsites: "*" # 跨域域名，如果需要传递多个域名可以使用,分割
 
 database:
   driverName: mysql
@@ -52,6 +53,7 @@ type ConfYaml struct {
 type SectionServer struct {
 	Port string `yaml:"port"`
 	RunMode string `yaml:"runMode"`
+	CorsWebsites string `yaml:"cors_websites"`
 }
 
 // SectionDatabases config for database
@@ -126,6 +128,7 @@ func LoadConf(confPath string) (ConfYaml, error) {
 	// Server
 	config.Server.Port = viper.GetString("server.port")
 	config.Server.RunMode = viper.GetString("server.runMode")
+	config.Server.CorsWebsites = viper.GetString("server.corsWebsites")
 
 	// Database
 	config.Database.DriverName = viper.GetString("database.driverName")
