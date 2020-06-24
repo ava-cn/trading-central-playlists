@@ -1,10 +1,7 @@
 package supports
 
 import (
-	"errors"
-	"log"
 	"net/http"
-	"net/url"
 	"path"
 )
 
@@ -12,34 +9,26 @@ import (
 func GetRedirectURL(originURL string) (redirectURL string, err error) {
 	var (
 		client       *http.Client
-		httpRequest  *http.Request
 		httpResponse *http.Response
-		responseURL  *url.URL
 	)
+
 	client = &http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			//自用，将url根据需求进行组合
-			if len(via) >= 1 {
-				return errors.New("stopped after 1 redirects")
-			}
-			return nil
+			return http.ErrUseLastResponse
 		},
 	}
 
-	if httpRequest, err = http.NewRequest("GET", originURL, nil); err != nil {
+	if httpResponse, err = client.Get(originURL); err != nil {
+		redirectURL = originURL
 		return
 	}
 
-	if httpResponse, err = client.Do(httpRequest); err != nil {
-		//log.Println(httpResponse.StatusCode)
-	}
-
-	if responseURL, err = httpResponse.Location(); err != nil {
-		log.Println(responseURL.String())
+	if httpResponse.StatusCode == 301 || httpResponse.StatusCode == 302 {
+		redirectURL = httpResponse.Header.Get("Location")
 		return
 	}
 
-	redirectURL = responseURL.String()
+	redirectURL = originURL
 
 	return
 }
