@@ -62,7 +62,7 @@ steps:
       PLUGIN_TARGET: /var/www/codes/avbpro.cn/trading-central-playlists
     settings:
       hosts:
-        - 161.117.202.228
+        - 47.241.226.178
       source: ./
       include:
         - "**.*"
