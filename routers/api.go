@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// 路由
+// InitRouters 路由
 func InitRouters(r *gin.Engine) *gin.Engine {
 
 	r.Use(middlewares.CorsMiddleware()) // 使用跨域中间件

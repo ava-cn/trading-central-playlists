@@ -10,7 +10,7 @@ import (
 
 var DB *gorm.DB
 
-// 初始化数据库
+// InitDB 初始化数据库
 func InitDB() (db *gorm.DB) {
 	var (
 		driverName string
@@ -59,7 +59,7 @@ func InitDB() (db *gorm.DB) {
 	return
 }
 
-// 获取数据库实例
+// GetDB 获取数据库实例
 func GetDB() *gorm.DB {
 	return DB
 }

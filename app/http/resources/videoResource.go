@@ -32,7 +32,7 @@ func VideoCollection(videos []*models.Videos) (videoResources []VideosResource) 
 
 }
 
-// 视频详情
+// VideoShow 视频详情
 func VideoShow(video *models.Videos) *VideosResource {
 	return &VideosResource{
 		VideoID:           video.VideoID,

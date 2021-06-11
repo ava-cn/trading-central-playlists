@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-// 通过给定远程资源地址上传到七牛
+// UploadToQiniu 通过给定远程资源地址上传到七牛
 func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	var (
 		upToken      string
@@ -63,7 +63,7 @@ func UploadToQiniu(remoteURL string, distName string) (key string, err error) {
 	return
 }
 
-// 初始化七牛云存储
+// InitQiniu 初始化七牛云存储
 func InitQiniu() (formUploader *storage.FormUploader, upToken string, err error) {
 	var (
 		bucket        string
@@ -101,7 +101,7 @@ func InitQiniu() (formUploader *storage.FormUploader, upToken string, err error)
 	return
 }
 
-// 通过给定key获取bucket中的资源
+// GetFile 通过给定key获取bucket中的资源
 func GetFile(key string) string {
 	var (
 		accessKey     string

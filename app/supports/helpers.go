@@ -5,7 +5,7 @@ import (
 	"path"
 )
 
-// 获取重定向后的URL地址
+// GetRedirectURL 获取重定向后的URL地址
 func GetRedirectURL(originURL string) (redirectURL string, err error) {
 	var (
 		client       *http.Client

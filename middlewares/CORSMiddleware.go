@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// 跨域中间件
+// CorsMiddleware 跨域中间件
 func CorsMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var (

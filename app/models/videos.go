@@ -40,7 +40,7 @@ type VideoExtras struct {
 	RedirectVideoThumbnailURL string `json:"redirect_video_thumbnail_url"`
 }
 
-// 通过视频ID查找视频是否存在
+// IsVideoExists 通过视频ID查找视频是否存在
 func IsVideoExists(db *gorm.DB, VideoID uint64) bool {
 	var video Videos
 
@@ -53,7 +53,7 @@ func IsVideoExists(db *gorm.DB, VideoID uint64) bool {
 	return false
 }
 
-// 分页
+// ListVideo 分页
 func ListVideo(db *gorm.DB, page, limit int) ([]*Videos, uint64, error) {
 	videos := make([]*Videos, 0)
 	var count uint64
