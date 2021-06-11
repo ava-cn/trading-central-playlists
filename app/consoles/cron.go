@@ -13,7 +13,7 @@ func InitCorn() {
 	)
 
 	c = cron.New(cron.WithLogger(cron.VerbosePrintfLogger(log.New(os.Stdout, "cron: ", log.LstdFlags))))
-	if _, err = c.AddFunc("* */1 * * *", RunSync); err != nil {
+	if _, err = c.AddFunc("@hourly", RunSync); err != nil {
 		panic(err)
 	}
 
