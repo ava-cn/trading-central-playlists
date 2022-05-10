@@ -26,7 +26,7 @@ func InitRouters(r *gin.Engine) *gin.Engine {
 		)
 		// 获取最新的一条数据
 		databases.GetDB().
-			Order("video_id desc").
+			Order("id desc").
 			Where("synced = ?", true).
 			First(&video)
 
