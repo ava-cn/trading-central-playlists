@@ -61,7 +61,7 @@ func ListVideo(db *gorm.DB, page, limit int) ([]*Videos, uint64, error) {
 	if err := db.Where("synced = ?", true).
 		Offset((page - 1) * limit).
 		Limit(limit).
-		Order("video_id desc").
+		Order("id desc").
 		Find(&videos).
 		Count(&count).
 		Error; err != nil {
